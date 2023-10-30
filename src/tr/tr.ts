@@ -164,12 +164,14 @@ function getDigitStart(fontType: FontType, style: Style): number | null {
 
 export function styleString(str: string, fontType: FontType, style: Style): string {
   const start = getAlphaStart(fontType, style);
-  console.log(start);
+  const chars = [...str];
+  const length = chars.length;
+  console.log(length);
+  const charCodes = chars.map((c) => c.codePointAt(0)!);
   const digitStart = getDigitStart(fontType, style);
   let result = '';
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
-    const code = char.charCodeAt(0);
+  for (let i = 0; i < length; i++) {
+    const code = charCodes[i];
     if (code >= 0x30 && code <= 0x39) {
       const digit = code - 0x30;
       if (digitStart !== null) {
@@ -187,7 +189,7 @@ export function styleString(str: string, fontType: FontType, style: Style): stri
       } else if (code >= 0x61 && code <= 0x7a) {
         result += String.fromCodePoint(start + code - 0x61 + 26);
       } else {
-        result += char;
+        result += chars[i];
       }
     }
   }
