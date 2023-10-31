@@ -19,9 +19,10 @@ function App() {
   };
 
   const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log(e.target.value);
+    const originalPos = e.target.selectionStart;
     const text = e.target.value;
     e.target.value = styleString(text, fontType, style);
+    e.target.selectionStart = e.target.selectionEnd = originalPos + 1;
   };
 
   return (

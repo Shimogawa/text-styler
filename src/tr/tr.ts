@@ -166,32 +166,27 @@ export function styleString(str: string, fontType: FontType, style: Style): stri
   const start = getAlphaStart(fontType, style);
   const chars = [...str];
   const length = chars.length;
-  console.log(length);
   const charCodes = chars.map((c) => c.codePointAt(0)!);
   const digitStart = getDigitStart(fontType, style);
-  let result = '';
+  const resultCodes = [];
   for (let i = 0; i < length; i++) {
     const code = charCodes[i];
     if (code >= 0x30 && code <= 0x39) {
       const digit = code - 0x30;
       if (digitStart !== null) {
-        result += String.fromCodePoint(digitStart + digit);
+        resultCodes.push(digitStart + digit);
       } else {
-        result += str[i];
+        resultCodes.push(charCodes[i]);
       }
-    } else if (reservedMap.has(code)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const reservedCode = reservedMap.get(code)!;
-      result += String.fromCodePoint(reservedCode);
     } else {
       if (code >= 0x41 && code <= 0x5a) {
-        result += String.fromCodePoint(start + code - 0x41);
+        resultCodes.push(start + code - 0x41);
       } else if (code >= 0x61 && code <= 0x7a) {
-        result += String.fromCodePoint(start + code - 0x61 + 26);
+        resultCodes.push(start + code - 0x61 + 26);
       } else {
-        result += chars[i];
+        resultCodes.push(charCodes[i]);
       }
     }
   }
-  return result;
+  return String.fromCodePoint(...resultCodes.map((c) => reservedMap.get(c) ?? c));
 }
